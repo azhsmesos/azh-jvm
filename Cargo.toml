@@ -1,5 +1,5 @@
 [package]
-name = "azh-jvm"
+name = "azh" # 放你自己想要的名字，build时二进制包的名字
 version = "0.1.0"
 edition = "2021"
 

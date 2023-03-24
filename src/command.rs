@@ -6,6 +6,7 @@ use tracing::info;
 pub struct Command {
     pub help_flag: bool,
     pub version_flag: bool,
+    pub info_flag: bool,
     pub cp_option: String,
     pub x_jre_option: String,
     pub class: String,
@@ -26,6 +27,7 @@ pub fn parse_command() -> Command {
     let mut command = Command {
         help_flag: false,
         version_flag: false,
+        info_flag: false,
         cp_option: "".to_string(),
         x_jre_option: "".to_string(),
         class: "".to_string(),
@@ -44,6 +46,7 @@ pub fn parse_command() -> Command {
         .long_only(true);
     opts.optflag("h", "help", "Print help message");
     opts.optflag("v", "version", "Print version and exit");
+    opts.optflag("", "info", "Print info about azh-jvm");
 
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
@@ -60,6 +63,10 @@ pub fn parse_command() -> Command {
 
     if matches.opt_present("version") {
         command.version_flag = true;
+    }
+
+    if matches.opt_present("info") {
+        command.info_flag = true;
     }
 
     command

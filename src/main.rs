@@ -22,6 +22,8 @@ fn main() {
 
     if cmd.version_flag {
         info!("{}", "The latest version: 0.0.1")
+    } else if cmd.info_flag {
+        info!("{}", "This is a simple version of the learning jvm")
     } else if cmd.help_flag || cmd.class == "" {
         cmd.print_introduction_message();
     } else {

@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "azh-jvm"
+name = "azh"
 version = "0.1.0"
 dependencies = [
  "getopts",
