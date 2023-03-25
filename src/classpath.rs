@@ -2,6 +2,8 @@ use crate::classpath::entry::Entry;
 
 mod entry;
 mod entry_dir;
+mod entry_wildcard;
+mod entry_compress;
 
 
 pub struct Classpath {
@@ -17,7 +19,7 @@ impl Classpath {
         // Self {
         //
         // }
-        // todo
+       todo!()
     }
 
 

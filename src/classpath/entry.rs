@@ -12,7 +12,7 @@ use crate::classpath::entry_dir::EntryDir;
 pub const PATH_SEPARATOR: char = ':';
 
 #[cfg(windows)]
-pub const path_separator: char = ';';
+pub const PATH_SEPARATOR: char = ';';
 
 /// 目前有这么几种文件对象
 /// -classpath file => 目录形式的类路径 entry_dir.rs
