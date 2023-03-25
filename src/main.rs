@@ -2,6 +2,7 @@ use crate::command::{parse_command, Command};
 use tracing::info;
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
+mod classpath;
 mod command;
 
 /// command: 命令行处理
