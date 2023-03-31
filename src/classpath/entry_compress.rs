@@ -1,17 +1,16 @@
+use crate::classpath::entry::{get_absolute_path, Entry};
 use std::fmt;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use zip::ZipArchive;
-use crate::classpath::entry::{Entry, get_absolute_path};
 
 pub struct EntryCompress {
     abs_path: String,
-    compress_archive: ZipArchive<File>
+    compress_archive: ZipArchive<File>,
 }
 
 impl EntryCompress {
-
     pub fn new(path: &str) -> Self {
         let abs_path = get_absolute_path(path);
         let path = Path::new(&abs_path);

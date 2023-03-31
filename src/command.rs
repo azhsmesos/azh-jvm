@@ -47,6 +47,9 @@ pub fn parse_command() -> Command {
     opts.optflag("h", "help", "Print help message");
     opts.optflag("v", "version", "Print version and exit");
     opts.optflag("", "info", "Print info about azh-jvm");
+    opts.optopt("", "classpath", "Specify the classpath", "classpath");
+    opts.optopt("", "cp", "Specify the classpath", "classpath");
+    opts.optopt("", "Xjre", "Path to jre", "jre");
 
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
@@ -67,6 +70,32 @@ pub fn parse_command() -> Command {
 
     if matches.opt_present("info") {
         command.info_flag = true;
+    }
+
+    match matches.opt_str("classpath") {
+        Some(classpath) => {
+            command.cp_option = classpath;
+        },
+        None => {
+            match matches.opt_str("cp") {
+                Some(cp) => {
+                    command.cp_option = cp;
+                },
+                None => {}
+            }
+        }
+    }
+    match matches.opt_str("Xjre") {
+        Some(x_jre_option) => {
+            command.x_jre_option = x_jre_option;
+        },
+        None => {}
+    }
+
+    // 未定义的参数放在 free Vec 中
+    if !matches.free.is_empty() {
+        command.class = matches.free[0].clone();
+        command.args = matches.free[1..].to_vec();
     }
 
     command

@@ -1,9 +1,10 @@
+use crate::classpath::entry_compress::EntryCompress;
+use crate::classpath::entry_dir::EntryDir;
+use crate::classpath::entry_multiple::EntryMultiple;
+use crate::classpath::entry_wildcard::EntryWildcard;
 use std::fmt;
 use std::path::Path;
 use tracing::error;
-use mockall::*;
-use crate::classpath::entry_dir::EntryDir;
-
 
 /// mac 系统分割是 ':'
 /// windows 系统分割是 '\'
@@ -20,7 +21,6 @@ pub const PATH_SEPARATOR: char = ';';
 /// -classpath file/*  => 以*结尾的路径 entry_wildcard.rs
 /// -classpath file.jar => 压缩文件路径 entry_compression.rs
 pub trait Entry: fmt::Display {
-
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String>;
 }
 
@@ -31,37 +31,44 @@ pub fn get_absolute_path(path: &str) -> String {
         Err(err) => {
             error!("Exec canonicalize function error: {}", err);
             panic!("{}", err)
-        },
+        }
     }
 }
 
 pub fn new_entry(path: &str) -> Box<dyn Entry> {
-
     // entry_multiple 多个文件
+    if path.contains(PATH_SEPARATOR) {
+        return Box::new(EntryMultiple::new(path));
+    }
 
     // entry_wildcard *结尾
+    if path.ends_with("*") {
+        return Box::new(EntryWildcard::new(path));
+    }
 
     // entry_compression 压缩文件
-
+    if path.ends_with(".jar")
+        || path.ends_with(".JAR")
+        || path.ends_with(".zip")
+        || path.ends_with(".ZIP")
+        || path.ends_with(".rar")
+        || path.ends_with(".RAR")
+    {
+        return Box::new(EntryCompress::new(path));
+    }
 
     Box::new(EntryDir::new(path))
 }
 
-
-
-
 #[cfg(test)]
 mod tests {
+    use crate::classpath::entry::get_absolute_path;
+    use mockall::{automock, mock};
     use std::io;
     use std::path::PathBuf;
-    use mockall::{automock, mock};
-    use crate::classpath::entry::get_absolute_path;
-
-
 
     #[test]
     fn test_get_absolute_path() {
-
         // struct Function{}
         // #[automock]
         // trait Functions {
@@ -71,6 +78,9 @@ mod tests {
         // let mut mock = MockFunctons::new();
         let path: &str = "src/classpath/entry.rs";
         let absolute_path = get_absolute_path(path);
-        assert_eq!(absolute_path, "/Users/zhaozhenhang/Desktop/test/rust/azh-jvm/src/classpath/entry.rs".to_string());
+        assert_eq!(
+            absolute_path,
+            "/Users/zhaozhenhang/Desktop/test/rust/azh-jvm/src/classpath/entry.rs".to_string()
+        );
     }
 }
