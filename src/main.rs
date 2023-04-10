@@ -4,9 +4,11 @@ use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 use crate::classpath::{Classpath};
 use crate::classpath::entry::Entry;
 
-mod classpath;
- mod command;
+pub mod classpath;
+pub mod command;
 pub mod util;
+pub mod classfile;
+pub mod types;
 
 /// command: 命令行处理
 /// classpath: 查找 Class 文件
@@ -37,20 +39,19 @@ fn main() {
 
 fn start_jvm(cmd: Command) {
     info!("[WELCOME USE THIS JVM, It's named azh after my girlfriend, thanks]");
+    // 解析classpath
     let mut classpath = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
 
     info!("classpath: {} class: {} args: {:?}", classpath, cmd.class, cmd.args);
 
+    // 读取classpath的class文件数据
     let class_name = cmd.class.replace(".", "/");
     let class_data = match classpath.read_class(&class_name) {
         Ok(class_data) => class_data,
         Err(err) => { panic!("Could not find or load main class {}: {}", cmd.class, err); },
     };
-    // let mut classpath = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
-    // let classname = cmd.class.replace(".", "/");
-    // let class_data = match classpath.read_class(&classname) {
-    //     Ok(class_data) => class_data,
-    //     Err(err) => panic!("Can't read class data, classname: {}, x_jre_option: {}, err: {}", cmd.class, cmd.x_jre_option, err),
-    // };
-    info!("class data: {:?}", class_data)
+
+    // 解析classfile数据
+
+    // 打印出来
 }
