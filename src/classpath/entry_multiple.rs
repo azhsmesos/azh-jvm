@@ -1,6 +1,6 @@
 use crate::classpath::entry::{new_entry, Entry, PATH_SEPARATOR};
 use std::fmt;
-use std::fmt::{Formatter};
+use std::fmt::Formatter;
 
 pub struct EntryMultiple {
     entries: Vec<Box<dyn Entry>>,

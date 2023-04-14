@@ -1,5 +1,3 @@
-
-
 pub fn is_blank(s: &str) -> bool {
     s.trim().is_empty()
 }

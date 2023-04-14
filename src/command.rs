@@ -75,20 +75,18 @@ pub fn parse_command() -> Command {
     match matches.opt_str("classpath") {
         Some(classpath) => {
             command.cp_option = classpath;
-        },
-        None => {
-            match matches.opt_str("cp") {
-                Some(cp) => {
-                    command.cp_option = cp;
-                },
-                None => {}
-            }
         }
+        None => match matches.opt_str("cp") {
+            Some(cp) => {
+                command.cp_option = cp;
+            }
+            None => {}
+        },
     }
     match matches.opt_str("Xjre") {
         Some(x_jre_option) => {
             command.x_jre_option = x_jre_option;
-        },
+        }
         None => {}
     }
 

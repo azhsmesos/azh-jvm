@@ -1,10 +1,10 @@
-use crate::classpath::entry::{Entry, new_entry};
-use std::{env, fmt};
-use std::fmt::Formatter;
-use std::path::Path;
-use tracing::{error};
+use crate::classpath::entry::{new_entry, Entry};
 use crate::classpath::entry_wildcard::EntryWildcard;
 use crate::util::string_utils::{is_blank, is_not_blank};
+use std::fmt::Formatter;
+use std::path::Path;
+use std::{env, fmt};
+use tracing::error;
 
 pub mod entry;
 pub mod entry_compress;
@@ -29,7 +29,6 @@ impl Classpath {
             user_classpath,
         }
     }
-
 
     fn parse_boot_classpath(jre_option: &str) -> Box<dyn Entry> {
         let jre_dir = Classpath::get_jre_path(jre_option);
@@ -70,13 +69,19 @@ impl Classpath {
         match env::var("JAVA_HOME") {
             Ok(java_home) => {
                 if is_not_blank(&java_home) {
-                    return Path::new(&java_home).join("jre").to_str().unwrap().to_string();
+                    return Path::new(&java_home)
+                        .join("jre")
+                        .to_str()
+                        .unwrap()
+                        .to_string();
                 }
-            },
-            Err(_err) => {error!("java environment variables were not obtained")}
+            }
+            Err(_err) => {
+                error!("java environment variables were not obtained")
+            }
         }
 
-       panic!("{}", "Can't find jre folder!!!")
+        panic!("{}", "Can't find jre folder!!!")
     }
 }
 
@@ -85,19 +90,14 @@ impl Entry for Classpath {
         let class = class_name.to_string() + ".class";
         return match self.boot_classpath.read_class(class.as_str()) {
             Ok(data) => Ok(data),
-            Err(_err) => {
-                match self.ext_classpath.read_class(&class) {
+            Err(_err) => match self.ext_classpath.read_class(&class) {
+                Ok(data) => Ok(data),
+                Err(_err) => match self.user_classpath.read_class(&class) {
                     Ok(data) => Ok(data),
-                    Err(_err) => {
-                        match self.user_classpath.read_class(&class) {
-                            Ok(data) => Ok(data),
-                            Err(err) => return Err(err),
-                        }
-                    }
-                }
-            }
-        }
-
+                    Err(err) => return Err(err),
+                },
+            },
+        };
     }
 }
 
